@@ -7,7 +7,17 @@ exports.connection = {
     port: 5432,
     username: "postgres",
     password: "root",
-    database: "blog"
+    database: "blog",
+    synchronize: true,
+    entities: [
+        'dist/models/**/*.js'
+    ],
+    migrations: [
+        'dist/migrations/**/*.js'
+    ],
+    cli: {
+        migrationsDir: "src/migrations"
+    }
 };
 exports.default = exports.connection;
 //# sourceMappingURL=db.js.map
