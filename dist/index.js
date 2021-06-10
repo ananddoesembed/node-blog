@@ -15,15 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 require("reflect-metadata");
 const routes_1 = __importDefault(require("./routes"));
-const db_1 = __importDefault(require("./db"));
 const typeorm_1 = require("typeorm");
 const server = express_1.default();
 server.set('view engine', 'ejs');
 server.use(express_1.default.urlencoded({ extended: false }));
-server.use('/', routes_1.default);
+server.get('/', (_, res) => {
+    res.redirect('/article');
+});
+server.use('/article', routes_1.default);
 const port = process.env.PORT || 3000;
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`listening to port ${port}`);
-    yield typeorm_1.createConnection(db_1.default).then(() => console.log('connected')).catch((error) => console.log(error));
+    yield typeorm_1.createConnection().then(() => console.log('connected')).catch((error) => console.log(error));
 })).on('error', (error) => console.log(error));
 //# sourceMappingURL=index.js.map
