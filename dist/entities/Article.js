@@ -47,6 +47,10 @@ __decorate([
     __metadata("design:type", String)
 ], Articles.prototype, "slug", void 0);
 __decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], Articles.prototype, "image", void 0);
+__decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),
     __metadata("design:type", Object)

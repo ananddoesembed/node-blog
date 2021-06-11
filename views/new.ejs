@@ -12,7 +12,7 @@
 </head>
 <body class="container" style="margin:10px">
     <h3>New Post</h3>
-    <form action="/article" method="POST">
+    <form action="/article" method="POST" enctype="multipart/form-data">
         <%- include('include/_form') %> 
         <a href="/article" class="btn btn-secondary">Cancel</a>
         <button type="submit" class="btn btn-primary">Submit</button>

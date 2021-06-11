@@ -16,6 +16,8 @@ export class Articles {
     content:string
     @Column()
     slug:string
+    @Column()
+    image:string
 
     @BeforeInsert()
     @BeforeUpdate()

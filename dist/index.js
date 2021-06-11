@@ -21,6 +21,7 @@ const server = express_1.default();
 server.set('view engine', 'ejs');
 server.use(express_1.default.urlencoded({ extended: false }));
 server.use(method_override_1.default('_method'));
+server.use(express_1.default.static("uploads"));
 server.get('/', (_, res) => {
     res.redirect('/article');
 });
