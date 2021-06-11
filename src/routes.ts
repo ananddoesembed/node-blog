@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import { getRepository } from 'typeorm'
 import { Articles } from './entities/Article'
-
 const router = Router()
 router.get('/', async (_, res) => {
     try {
         const articleRepo = getRepository(Articles)
         const posts = await articleRepo.find()
+
         res.render('index', { articles: posts })
 
     } catch (error) {
@@ -30,10 +30,10 @@ router.post('/', async (req, res) => {
         console.log(error)
     }
 })
-router.get('/:postId', async (req, res) => {
+router.get('/:slug', async (req, res) => {
     try {
         const articleRepo = getRepository(Articles)
-        const article = await articleRepo.findOne(req.params.postId)
+        const article = await articleRepo.findOne({ slug: req.params.slug })
         console.log(article)
         res.render('edit', { article: article })
     } catch (error) {
@@ -41,13 +41,11 @@ router.get('/:postId', async (req, res) => {
     }
 
 })
-router.put('/:postId', async (req, res) => {
+router.put('/:slug', async (req, res) => {
     try {
-        console.log('here')
         const articleRepo = getRepository(Articles)
-        const article = await articleRepo.findOne(req.params.postId)
-        if(article==undefined)
-        {
+        const article = await articleRepo.findOne({ slug: req.params.slug })
+        if (article == undefined) {
             return res.status(404).send('post not found')
         }
         articleRepo.merge(article, req.body)
@@ -56,5 +54,11 @@ router.put('/:postId', async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+})
+
+router.delete('/:slug', async (req, res) => {
+    const articleRepo = getRepository(Articles)
+    await articleRepo.delete({ slug: req.params.slug })
+    res.redirect('/article')
 })
 export default router;

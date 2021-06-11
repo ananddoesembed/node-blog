@@ -27,8 +27,11 @@
             <p class="card-text">
                 <%= article.paragraph  %> 
             </p>
-            <a href="/article/<%= article.id %>"  class="btn btn-warning">Edit</a>
-            <button type="button" class="btn btn-danger">Delete</button>
+            
+            <form action="/article/<%= article.slug %>?_method=DELETE " method="POST">
+                <a href="/article/<%= article.slug %>"  class="btn btn-warning">Edit</a>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
           </div>
         </div>
   <%  }) %>

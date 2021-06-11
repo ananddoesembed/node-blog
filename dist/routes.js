@@ -42,10 +42,10 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(error);
     }
 }));
-router.get('/:postId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/:slug', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const articleRepo = typeorm_1.getRepository(Article_1.Articles);
-        const article = yield articleRepo.findOne(req.params.postId);
+        const article = yield articleRepo.findOne({ slug: req.params.slug });
         console.log(article);
         res.render('edit', { article: article });
     }
@@ -53,11 +53,10 @@ router.get('/:postId', (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log(error);
     }
 }));
-router.put('/:postId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/:slug', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('here');
         const articleRepo = typeorm_1.getRepository(Article_1.Articles);
-        const article = yield articleRepo.findOne(req.params.postId);
+        const article = yield articleRepo.findOne({ slug: req.params.slug });
         if (article == undefined) {
             return res.status(404).send('post not found');
         }
@@ -68,6 +67,11 @@ router.put('/:postId', (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         console.log(error);
     }
+}));
+router.delete('/:slug', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const articleRepo = typeorm_1.getRepository(Article_1.Articles);
+    yield articleRepo.delete({ slug: req.params.slug });
+    res.redirect('/article');
 }));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

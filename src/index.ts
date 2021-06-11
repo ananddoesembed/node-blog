@@ -2,10 +2,12 @@ import express from 'express'
 import 'reflect-metadata'
 import router from './routes'
 import { createConnection } from 'typeorm'
+import methodOverride from 'method-override'
 const server = express()
 
 server.set('view engine','ejs')
 server.use(express.urlencoded({extended:false}))
+server.use(methodOverride('_method'))
 server.get('/',(_,res)=>{
    res.redirect('/article')
 })

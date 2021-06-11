@@ -16,9 +16,11 @@ const express_1 = __importDefault(require("express"));
 require("reflect-metadata");
 const routes_1 = __importDefault(require("./routes"));
 const typeorm_1 = require("typeorm");
+const method_override_1 = __importDefault(require("method-override"));
 const server = express_1.default();
 server.set('view engine', 'ejs');
 server.use(express_1.default.urlencoded({ extended: false }));
+server.use(method_override_1.default('_method'));
 server.get('/', (_, res) => {
     res.redirect('/article');
 });
