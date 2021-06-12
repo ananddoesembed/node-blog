@@ -45,7 +45,7 @@ router.post('/',upload,async (req, res) => {
             image:req.file.filename
         })
         await articleRepo.save(article)
-        res.redirect("/")
+        res.redirect("/article")
     } catch (error) {
         console.log(error)
     }

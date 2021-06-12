@@ -12,7 +12,7 @@ server.use(express.urlencoded({extended:false}))
 server.use(methodOverride('_method'))
 server.use(express.static("uploads"))
 server.get('/',(_,res)=>{
-   res.redirect('/article')
+   res.render('login')
 })
 server.use('/article',router)
 

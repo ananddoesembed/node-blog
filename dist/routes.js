@@ -55,7 +55,7 @@ router.post('/', upload, (req, res) => __awaiter(void 0, void 0, void 0, functio
             image: req.file.filename
         });
         yield articleRepo.save(article);
-        res.redirect("/");
+        res.redirect("/article");
     }
     catch (error) {
         console.log(error);

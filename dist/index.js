@@ -23,7 +23,7 @@ server.use(express_1.default.urlencoded({ extended: false }));
 server.use(method_override_1.default('_method'));
 server.use(express_1.default.static("uploads"));
 server.get('/', (_, res) => {
-    res.redirect('/article');
+    res.render('login');
 });
 server.use('/article', routes_1.default);
 const port = process.env.PORT || 3000;
