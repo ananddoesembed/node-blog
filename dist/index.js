@@ -17,13 +17,33 @@ require("reflect-metadata");
 const routes_1 = __importDefault(require("./routes"));
 const method_override_1 = __importDefault(require("method-override"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const connect_mongo_1 = __importDefault(require("connect-mongo"));
+const express_session_1 = __importDefault(require("express-session"));
 const server = express_1.default();
 mongoose_1.default.connect('mongodb://localhost/blog', { useNewUrlParser: true, useUnifiedTopology: true });
 server.set('view engine', 'ejs');
 server.use(express_1.default.urlencoded({ extended: false }));
+const sessionStore = new connect_mongo_1.default({
+    ttl: 84 * 60 * 60 * 1000,
+    mongoUrl: 'mongodb://localhost/blog',
+    collectionName: 'session',
+});
+server.use(express_session_1.default({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+    store: sessionStore,
+}));
 server.use(method_override_1.default('_method'));
 server.use(express_1.default.static("uploads"));
-server.get('/', (_, res) => {
+server.get('/', (req, res) => {
+    if (!req.session.usercount) {
+        req.session.usercount = 1;
+    }
+    else {
+        req.session.usercount += 1;
+    }
+    console.log(req.session.usercount);
     res.render('login');
 });
 server.use('/article', routes_1.default);
