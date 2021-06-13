@@ -13,10 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const typeorm_1 = require("typeorm");
-const Article_1 = require("./entities/Article");
 const path_1 = __importDefault(require("path"));
 const multer_1 = __importDefault(require("multer"));
+const Blog_1 = __importDefault(require("./Model/Blog"));
 const router = express_1.Router();
 const storage = multer_1.default.diskStorage({
     destination: './uploads',
@@ -29,8 +28,7 @@ const upload = multer_1.default({
 }).single('image');
 router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const articleRepo = typeorm_1.getRepository(Article_1.Articles);
-        const posts = yield articleRepo.find();
+        const posts = yield Blog_1.default.find();
         res.render('index', { articles: posts });
     }
     catch (error) {
@@ -39,7 +37,7 @@ router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.get('/new', (_, res) => {
     try {
-        res.render('new', { article: new Article_1.Articles() });
+        res.render('new', { article: new Blog_1.default() });
     }
     catch (error) {
         console.log(error);
@@ -47,14 +45,12 @@ router.get('/new', (_, res) => {
 });
 router.post('/', upload, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const articleRepo = typeorm_1.getRepository(Article_1.Articles);
-        const article = articleRepo.create({
-            title: req.body.title,
-            description: req.body.description,
-            content: req.body.content,
-            image: req.file.filename
-        });
-        yield articleRepo.save(article);
+        const article = new Blog_1.default();
+        article.title = req.body.title,
+            article.description = req.body.description,
+            article.content = req.body.content,
+            article.image = req.file.filename;
+        yield article.save();
         res.redirect("/article");
     }
     catch (error) {
@@ -63,8 +59,7 @@ router.post('/', upload, (req, res) => __awaiter(void 0, void 0, void 0, functio
 }));
 router.get('/:slug', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const articleRepo = typeorm_1.getRepository(Article_1.Articles);
-        const article = yield articleRepo.findOne({ slug: req.params.slug });
+        const article = yield Blog_1.default.findOne({ slug: req.params.slug });
         console.log(article);
         res.render('edit', { article: article });
     }
@@ -74,15 +69,13 @@ router.get('/:slug', (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 router.put('/:slug', upload, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const articleRepo = typeorm_1.getRepository(Article_1.Articles);
         console.log(req.params.slug);
-        const article = yield articleRepo.findOne({ slug: req.params.slug });
+        const article = yield Blog_1.default.findOne({ slug: req.params.slug });
         if (article == undefined) {
             return res.status(404).send('post not found');
         }
-        article.image = req.file.filename;
-        articleRepo.merge(article, req.body);
-        yield articleRepo.save(article);
+        req.file === undefined ? article.image = 'no' + Date.now() : article.image = req.file.filename;
+        yield article.save();
         res.redirect('/article');
     }
     catch (error) {
@@ -90,8 +83,7 @@ router.put('/:slug', upload, (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 }));
 router.delete('/:slug', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const articleRepo = typeorm_1.getRepository(Article_1.Articles);
-    yield articleRepo.delete({ slug: req.params.slug });
+    yield Blog_1.default.findOneAndDelete({ slug: req.params.slug });
     res.redirect('/article');
 }));
 exports.default = router;
