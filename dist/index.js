@@ -19,6 +19,9 @@ const method_override_1 = __importDefault(require("method-override"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const connect_mongo_1 = __importDefault(require("connect-mongo"));
 const express_session_1 = __importDefault(require("express-session"));
+const passport_1 = __importDefault(require("passport"));
+const passwordUtils_1 = require("./passwordUtils");
+const User_1 = __importDefault(require("./Model/User"));
 const server = express_1.default();
 mongoose_1.default.connect('mongodb://localhost/blog', { useNewUrlParser: true, useUnifiedTopology: true });
 server.set('view engine', 'ejs');
@@ -36,17 +39,27 @@ server.use(express_session_1.default({
 }));
 server.use(method_override_1.default('_method'));
 server.use(express_1.default.static("uploads"));
-server.get('/', (req, res) => {
-    if (!req.session.usercount) {
-        req.session.usercount = 1;
-    }
-    else {
-        req.session.usercount += 1;
-    }
-    console.log(req.session.usercount);
+require('./passport-config');
+server.use(passport_1.default.initialize());
+server.use(passport_1.default.session());
+server.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    req.logOut();
     res.render('login');
-});
+}));
+server.post('/login', passport_1.default.authenticate('local', { failureRedirect: '/', successRedirect: '/article' }));
 server.use('/article', routes_1.default);
+server.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const saltHash = passwordUtils_1.genPassword(req.body.password);
+    const salt = saltHash.salt;
+    const hash = saltHash.hash;
+    const newUser = new User_1.default({
+        hash: hash,
+        salt: salt,
+        email: req.body.email
+    });
+    yield newUser.save();
+    res.send(newUser);
+}));
 const port = process.env.PORT || 3000;
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`listening to port ${port}`);

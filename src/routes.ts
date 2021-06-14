@@ -2,6 +2,7 @@ import { Router } from 'express'
 import path from 'path'
 import multer from 'multer'
 import Article from './Model/Blog'
+import {isAuthenticated} from './auth'
 const router = Router()
 
 const storage = multer.diskStorage({
@@ -16,10 +17,10 @@ const storage = multer.diskStorage({
  }).single('image')
 
 
-router.get('/',async (_, res) => {
+router.get('/',isAuthenticated,async (req, res) => {
     try {
         const posts = await Article.find()
-
+        console.log(req.session)
         res.render('index', { articles: posts })
 
     } catch (error) {

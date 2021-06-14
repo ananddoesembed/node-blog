@@ -24,9 +24,8 @@ User.findOne({email}).then((user)=>{
 }
 
 
-const strategy = new LocalStrategy({usernameField:"email"},verifyCallback)
 
-passport.use(strategy)
+passport.use(new LocalStrategy({usernameField:"email"},verifyCallback))
 
 
 passport.serializeUser<any, any>((_, user, done) => {

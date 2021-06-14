@@ -11,6 +11,9 @@ declare module 'express-session' {
    }
 }
 import session from 'express-session'
+import passport from 'passport'
+import { genPassword } from './passwordUtils'
+import User from './Model/User'
 
 
 const server = express()
@@ -35,19 +38,29 @@ server.use(session({
 
 server.use(methodOverride('_method'))
 server.use(express.static("uploads"))
-server.get('/', (req, res) => {
-   if(!req.session.usercount){
-      req.session.usercount=1
-   }
-   else{
-      req.session.usercount+=1
-   }
-   console.log(req.session.usercount)
+require('./passport-config')
+server.use(passport.initialize());
+server.use(passport.session());
+server.get('/',async(req, res) => {
+   req.logOut()
    res.render('login')
 })
+server.post('/login',passport.authenticate('local',{failureRedirect:'/',successRedirect:'/article'}))
 server.use('/article', router)
 
-
+server.post('/register',async(req,res)=>{
+   const saltHash= genPassword(req.body.password)
+   
+   const salt = saltHash.salt
+   const hash = saltHash.hash
+   const newUser = new User({
+      hash:hash,
+      salt:salt,
+      email:req.body.email
+   })
+   await newUser.save()
+   res.send(newUser)
+})
 
 const port = process.env.PORT || 3000
 server.listen(port, async () => {

@@ -16,6 +16,7 @@ const express_1 = require("express");
 const path_1 = __importDefault(require("path"));
 const multer_1 = __importDefault(require("multer"));
 const Blog_1 = __importDefault(require("./Model/Blog"));
+const auth_1 = require("./auth");
 const router = express_1.Router();
 const storage = multer_1.default.diskStorage({
     destination: './uploads',
@@ -26,9 +27,10 @@ const storage = multer_1.default.diskStorage({
 const upload = multer_1.default({
     storage: storage,
 }).single('image');
-router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/', auth_1.isAuthenticated, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const posts = yield Blog_1.default.find();
+        console.log(req.session);
         res.render('index', { articles: posts });
     }
     catch (error) {

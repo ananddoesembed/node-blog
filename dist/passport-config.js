@@ -24,8 +24,7 @@ const verifyCallback = (email, password, done) => {
         done(err);
     });
 };
-const strategy = new LocalStrategy({ usernameField: "email" }, verifyCallback);
-passport_1.default.use(strategy);
+passport_1.default.use(new LocalStrategy({ usernameField: "email" }, verifyCallback));
 passport_1.default.serializeUser((_, user, done) => {
     done(null, user);
 });
